@@ -136,15 +136,28 @@ function Home() {
                   ref={isLastMovie ? lastMovieRef : null}
                 >
                   <Card 
-                    sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
+                    sx={{ 
+                      height: '100%', 
+                      display: 'flex', 
+                      flexDirection: 'column',
+                      boxShadow: 3,
+                      borderRadius: 2,
+                      maxHeight: '400px',
+                    }}
                     className="movie-card-animation"
                   >
                     <CardMedia
-                      component="img"
-                      image={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                      alt={movie.title}
-                      sx={{ aspectRatio: '2/3' }}
-                    />
+                          component="img"
+                          image={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                          alt={movie.title}
+                          sx={{ 
+                        aspectRatio: '2/3', 
+                        objectFit: 'cover',
+                        borderRadius: '4px',
+                        width: '345px',
+                        height: '345px' // Adjust height for better fit
+                      }}
+                  />
                     <CardContent sx={{ flexGrow: 1 }}>
                       <Typography gutterBottom variant="h6" component="h2">
                         {movie.title}

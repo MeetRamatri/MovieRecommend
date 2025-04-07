@@ -69,7 +69,7 @@ function TMDBRecommendation() {
   };
 
   return (
-    <Container maxWidth="md" sx={{ py: 4 }}>
+    <Container maxWidth="xl" sx={{ py: 4 }}>
       <Typography variant="h4" component="h1" gutterBottom align="center">
         TMDB Movie Recommendations
       </Typography>
@@ -107,9 +107,16 @@ function TMDBRecommendation() {
                 component="img"
                 image={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
                 alt={movie.title}
-                sx={{ aspectRatio: '2/3' }}
+                sx={{ 
+                  aspectRatio: '2/3',
+                  width: '345px', 
+                  height: '345px', 
+                  objectFit: 'cover', 
+                  borderRadius: '4px', 
+                  margin: '0 auto' // Center the image horizontally
+                }}
               />
-              <CardContent>
+              <CardContent sx={{ flexGrow: 1 }}>
                 <Typography variant="h6" component="div" align="center" noWrap>
                   {movie.title}
                 </Typography>
