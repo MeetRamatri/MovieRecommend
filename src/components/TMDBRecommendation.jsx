@@ -79,7 +79,7 @@ function TMDBRecommendation() {
           label="Select Movie"
           value={movieTitle}
           onChange={(e) => setMovieTitle(e.target.value)}
-          sx={{ mr: 2, minWidth: 200 }}
+          sx={{ mr: 2,  backgroundColor: 'white', borderColor: 'white', minWidth: 200 }}
           SelectProps={{ native: true }}
         >
           <option value="">None</option>
