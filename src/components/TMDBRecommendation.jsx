@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Typography, Box, TextField, Button, CircularProgress, Grid, Card, CardMedia, CardContent } from '@mui/material';
+import { Container, Typography, Box, TextField, Button, CircularProgress, Grid, Card, CardMedia, CardContent, Autocomplete } from '@mui/material';
 import axios from 'axios';
 
 function TMDBRecommendation() {
   const [movieTitle, setMovieTitle] = useState('');
+  const [inputValue, setInputValue] = useState('');
   const [recommendations, setRecommendations] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -11,21 +12,43 @@ function TMDBRecommendation() {
 
   useEffect(() => {
     const fetchMovies = async () => {
+      if (inputValue === '') {
+        try {
+          const response = await axios.get('https://api.themoviedb.org/3/movie/popular', {
+            params: {
+              api_key: 'f120db4af47ac2ecb1f068a79a005777',
+              language: 'en-US',
+              page: 1
+            }
+          });
+          setMovies(response.data.results);
+        } catch (error) {
+          console.error('Error fetching movies:', error);
+        }
+        return;
+      }
+
       try {
-        const response = await axios.get('https://api.themoviedb.org/3/movie/popular', {
+        const response = await axios.get('https://api.themoviedb.org/3/search/movie', {
           params: {
             api_key: 'f120db4af47ac2ecb1f068a79a005777',
+            query: inputValue,
             language: 'en-US',
             page: 1
           }
         });
         setMovies(response.data.results);
       } catch (error) {
-        console.error('Error fetching movies:', error);
+        console.error('Error searching movies:', error);
       }
     };
-    fetchMovies();
-  }, []);
+
+    const delayDebounceFn = setTimeout(() => {
+      fetchMovies();
+    }, 500);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [inputValue]);
 
   const fetchRecommendations = async () => {
     if (!movieTitle) {
@@ -74,21 +97,23 @@ function TMDBRecommendation() {
         TMDB Movie Recommendations
       </Typography>
       <Box sx={{ display: 'flex', justifyContent: 'center', mb: 4 }}>
-        <TextField
-          select
-          label="Select Movie"
+        <Autocomplete
+          freeSolo
+          options={movies.map((option) => option.title)}
           value={movieTitle}
-          onChange={(e) => setMovieTitle(e.target.value)}
-          sx={{ mr: 2,  backgroundColor: 'white', borderColor: 'white', minWidth: 200 }}
-          SelectProps={{ native: true }}
-        >
-          <option value="">None</option>
-          {movies.map((movie) => (
-            <option key={movie.id} value={movie.title}>
-              {movie.title}
-            </option>
-          ))}
-        </TextField>
+          onChange={(event, newValue) => {
+            setMovieTitle(newValue || '');
+          }}
+          inputValue={inputValue}
+          onInputChange={(event, newInputValue) => {
+            setInputValue(newInputValue);
+            setMovieTitle(newInputValue);
+          }}
+          sx={{ mr: 2, backgroundColor: 'white', minWidth: 250, borderRadius: 1 }}
+          renderInput={(params) => (
+            <TextField {...params} placeholder="Select or Type Movie" />
+          )}
+        />
         <Button
           variant="contained"
           color="primary"
